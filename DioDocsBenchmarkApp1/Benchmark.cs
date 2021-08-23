@@ -15,8 +15,7 @@ namespace DioDocsBenchmarkApp1
     {
         public MyConfig()
         {
-            // Using the WithOptions() factory method:
-            this.WithOptions(ConfigOptions.DisableOptimizationsValidator);
+            WithOptions(ConfigOptions.DisableOptimizationsValidator);
         }
     }
 
@@ -24,9 +23,6 @@ namespace DioDocsBenchmarkApp1
     [SimpleJob(RuntimeMoniker.Net50)]
     public class Benchmark
     {
-        [Params(1000)]
-        public int N;
-
         [GlobalSetup]
         public static void Setup() => GrapeCity.Documents.Excel.Workbook.SetLicenseKey("");
 
@@ -74,19 +70,15 @@ namespace DioDocsBenchmarkApp1
             using (var spreadsheetDocument =
                 SpreadsheetDocument.Create(Stream.Null, SpreadsheetDocumentType.Workbook))
             {
-                // Add a WorkbookPart to the document.
                 var workbookpart = spreadsheetDocument.AddWorkbookPart();
                 workbookpart.Workbook = new DocumentFormat.OpenXml.Spreadsheet.Workbook();
 
-                // Add a WorksheetPart to the WorkbookPart.
                 var worksheetPart = workbookpart.AddNewPart<WorksheetPart>();
                 var sheetData = new SheetData();
                 worksheetPart.Worksheet = new Worksheet(sheetData);
 
-                // Add Sheets to the Workbook.
                 var sheets = spreadsheetDocument.WorkbookPart.Workbook.AppendChild(new Sheets());
 
-                // Append a new worksheet and associate it with the workbook.
                 var sheet = new Sheet()
                 {
                     Id = spreadsheetDocument.WorkbookPart.GetIdOfPart(worksheetPart),
@@ -95,7 +87,6 @@ namespace DioDocsBenchmarkApp1
                 };
                 sheets.Append(sheet);
 
-                // Append Row 1 and 2.
                 for (var i = 1; i <= ColumnNum; i++)
                 {
                     for (var j = 1; j <= RowNum; j++)
@@ -113,7 +104,6 @@ namespace DioDocsBenchmarkApp1
 
                 workbookpart.Workbook.Save();
 
-                // Close the document.
                 spreadsheetDocument.Close();
             }
         }
